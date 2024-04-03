@@ -1,9 +1,13 @@
-variable "availability_zone" {
-  type = string
+variable "availability_zones" {
+  type = list(string)
 }
 
 variable "environment" {
   type = string
+}
+
+variable "listeners" {
+  type = map(any)
 }
 
 variable "name" {
