@@ -19,15 +19,23 @@ data "aws_subnets" "public" {
   }
 }
 
+data "aws_acm_certificate" "this" {
+  domain   = data.aws_route53_zone.this.name
+  statuses = ["ISSUED"]
+}
+
+data "aws_ssm_parameter" "zone_id" {
+  name = format("/environment/%s/route53/zone_id", var.environment)
+}
+
+data "aws_ssm_parameter" "zone_name" {
+  name = format("/environment/%s/route53/zone_name", var.environment)
+}
+
 data "aws_route53_zone" "this" {
-  name = var.zone_name
+  name = data.aws_ssm_parameter.zone_name.value
   tags = {
     Environment = var.environment
     Public      = "true"
   }
-}
-
-data "aws_acm_certificate" "this" {
-  domain   = data.aws_route53_zone.this.name
-  statuses = ["ISSUED"]
 }
